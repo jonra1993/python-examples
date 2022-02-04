@@ -1,8 +1,6 @@
 # https://www.naept.com/en/blog/a-simple-tree-building-algorithm/
 from collections import deque
-from multiprocessing.sharedctypes import Value
-from turtle import st
-from typing import Iterable, List
+from typing import List
 
 class RFNode:
     id: str = ''
@@ -13,7 +11,6 @@ class RFNode:
 
 def make_tree(nodes: List[RFNode], parent_id: str) -> List:
     populated = filter(lambda datum: datum['source'] == parent_id, nodes)
-    #print('populated', list(populated))
     origin_dest = []
     for i, value in enumerate(populated):
         origin_dest.append({
@@ -24,37 +21,28 @@ def make_tree(nodes: List[RFNode], parent_id: str) -> List:
     return origin_dest
 
 # Recursive function to find paths from the root node to every leaf node
-
-
-def print_root_to_leaf_paths(node: dict, path: deque, persistant_paths: deque):
-
+def get_root_to_leaf_paths(node: dict, path: deque, persistant_paths: deque):
     # include the current node to the path
-    path.append({'source': node['source'], 'target': node['target'], 'id': node['id']})
-    # path.append(node['id'])
+    path.append({'source': node['source'], 'target': node['target'], 'id': node['id']})    
 
     # if a leaf node is found, print the path
     if is_node_leaf(node):
         persistant_paths.append(list(path))
         # print(list(path))
-
     else:
-        # recur for the left and right subtree
         for i, ro in enumerate(node['children']):
-            print_root_to_leaf_paths(ro, path, persistant_paths)
+            get_root_to_leaf_paths(ro, path, persistant_paths)
 
     # backtrack: remove the current node after the left, and right subtree are done
     path.pop()
 
-# The main function to print paths from the root node to every leaf node
-
-
-def print_root_to_leaf_path(root: List[dict]):
-
+# The main function to get paths from the root node to every leaf node
+def get_root_to_leaf_path(root: List[dict]):
     # list to store root-to-leaf path
     path = deque()
     persistant_paths = deque()
     for i, item in enumerate(root):
-        print_root_to_leaf_paths(item, path, persistant_paths)
+        get_root_to_leaf_paths(item, path, persistant_paths)
 
     data = []
     for i, item_list in enumerate(list(persistant_paths)):
@@ -66,13 +54,10 @@ def print_root_to_leaf_path(root: List[dict]):
                             
         data.append(literal)        
 
-    # print('persistant_paths', list(persistant_paths))
-    print('persistant_paths', list(data))
+    return data        
     
 
 # Function to check if a given node is a leaf node or not
-
-
 def is_node_leaf(path: dict):
     return len(path['children']) < 1
 
@@ -97,7 +82,8 @@ def main():
     ]
 
     tree = make_tree(data, '1')
-    print_root_to_leaf_path(tree)
+    paths = get_root_to_leaf_path(tree)
+    print('persistant_paths', paths)
 
 
 if __name__ == '__main__':
