@@ -8,7 +8,9 @@ authors = ["jonra1993 <jon_ra@hotmail.es>"]
 binary_node_tree = "python_examples.binary_node_tree:main"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8,<3.11"
+deepspeech = "^0.9.3"
+scipy = "^1.8.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
